@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Tesla Fleet API (isteğe bağlı) -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Android 13+ bildirimleri -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Android 12+ eşleşmiş cihaz adları ve bağlantı olayları -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- Android 11 ve altı için eski Bluetooth izni -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
+
+    <application
+        android:name=".TeslaChargeApp"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.TeslaCharge"
+        tools:targetApi="35">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.TeslaCharge">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Tesla OAuth yönlendirmesi: teslachargetracker://oauth/callback -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="teslachargetracker" android:host="oauth" />
+            </intent-filter>
+        </activity>
+
+        <!-- Bluetooth ACL bağlantı olayları manifest üzerinden alınabilen istisna yayınlardandır. -->
+        <receiver
+            android:name=".reminders.BluetoothEventReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
+                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- WorkManager, Application.Configuration.Provider ile isteğe bağlı başlatılır. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
+        <receiver
+            android:name=".reminders.NotificationActionReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".reminders.BootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>
