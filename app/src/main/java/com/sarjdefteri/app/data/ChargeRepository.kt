@@ -10,6 +10,14 @@ import kotlinx.coroutines.flow.Flow
 class ChargeRepository(private val db: AppDatabase) {
     private val sessions = db.chargeSessionDao()
     private val odometer = db.odometerDao()
+    private val campaignDao = db.campaignDao()
+
+    val campaigns: Flow<List<com.sarjdefteri.app.data.db.CampaignEntity>> = campaignDao.observeAll()
+    suspend fun allCampaignsOnce() = campaignDao.getAll()
+    suspend fun getCampaign(id: Long) = campaignDao.get(id)
+    suspend fun saveCampaign(e: com.sarjdefteri.app.data.db.CampaignEntity): Long =
+        if (e.id == 0L) campaignDao.insert(e) else { campaignDao.update(e); e.id }
+    suspend fun deleteCampaign(e: com.sarjdefteri.app.data.db.CampaignEntity) = campaignDao.delete(e)
 
     val allSessions: Flow<List<ChargeSessionEntity>> = sessions.observeAll()
     val odometerReadings: Flow<List<OdometerReadingEntity>> = odometer.observeAll()

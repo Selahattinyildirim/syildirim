@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.LocalOffer
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
@@ -49,6 +50,7 @@ import com.sarjdefteri.app.ui.components.DateTimePickerDialog
 import com.sarjdefteri.app.ui.components.NumberField
 import com.sarjdefteri.app.ui.components.SectionCard
 import com.sarjdefteri.app.ui.components.TextInput
+import com.sarjdefteri.app.ui.theme.TeslaRed
 
 private val DEFAULT_BANKS = listOf("Akbank", "Garanti BBVA", "İş Bankası", "Yapı Kredi", "QNB", "Ziraat", "Enpara", "VakıfBank", "Halkbank", "DenizBank")
 private val DEFAULT_PAYMENTS = listOf("Kredi kartı", "Banka kartı", "Uygulama cüzdanı", "Tesla hesabı", "Nakit")
@@ -63,6 +65,8 @@ fun EntryScreen(vm: EntryViewModel, onBack: () -> Unit, onSaved: (Long) -> Unit)
     var pickStart by remember { mutableStateOf(false) }
     var pickEnd by remember { mutableStateOf(false) }
     val computed = vm.computed()
+    @Suppress("UNUSED_VARIABLE") val campaignList by vm.campaigns.collectAsState()
+    val suggestions = vm.campaignSuggestions()
     val error = vm.validationError()
 
     Scaffold(
@@ -130,6 +134,25 @@ fun EntryScreen(vm: EntryViewModel, onBack: () -> Unit, onSaved: (Long) -> Unit)
                     NumberField(f.discountRate, { v -> vm.update { copy(discountRate = v) } }, "İndirim", Modifier.weight(1f), suffix = "%",
                         supporting = if (f.discountRate.isBlank()) computed.discountRate?.let { "≈ %${Fmt.num(it)}" } else null)
                 }
+            }
+
+            if (suggestions.isNotEmpty() && f.campaign.isBlank()) {
+                SectionCard(title = if (f.bank.isBlank()) "En avantajlı kart" else "Uygun kampanya") {
+                    suggestions.forEach { sg ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.LocalOffer, null, tint = TeslaRed)
+                            Column(Modifier.weight(1f).padding(start = 10.dp)) {
+                                Text(sg.campaign.title, style = MaterialTheme.typography.bodyLarge)
+                                Text("%" + Fmt.num(sg.campaign.discountRate, 1) + (sg.discount?.let { " · −" + Fmt.tl(it) } ?: ""),
+                                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                            TextButton(onClick = { vm.applyCampaign(sg) }) { Text("Uygula") }
+                        }
+                    }
+                }
+            } else if (f.campaign.isNotBlank()) {
+                AssistChip(onClick = { vm.update { copy(campaign = "", discountRate = "", discountAmount = "") } },
+                    label = { Text("Kampanya: ${f.campaign}  ✕") }, leadingIcon = { Icon(Icons.Default.LocalOffer, null) })
             }
 
             SectionCard(title = "Banka") {

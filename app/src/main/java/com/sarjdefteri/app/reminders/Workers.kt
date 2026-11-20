@@ -145,9 +145,24 @@ class IncompleteRecordsWorker(ctx: Context, params: WorkerParameters) : Coroutin
     override suspend fun doWork(): Result {
         val c = applicationContext.container
         val s = c.settings.current()
-        if (!s.remindersEnabled || !s.incompleteRecordReminder) return Result.success()
+        if (!s.remindersEnabled) return Result.success()
+        // Ayın ilk günlerinde: kampanyaları güncelleme hatırlatması (ayda bir).
+        val today = java.time.LocalDate.now()
+        if (s.campaignMonthlyReminder && today.dayOfMonth <= 3 &&
+            c.reminderState.tryAcquire("campaigns_${today.year}_${today.monthValue}", 20L * 24 * 3600_000L)
+        ) {
+            val active = c.charges.allCampaignsOnce().count { it.toCampaign().isValidOn(today) }
+            Notifications.post(
+                applicationContext, Notifications.ID_CAMPAIGNS,
+                Notifications.builder(applicationContext, Notifications.CH_REMINDERS, "Yeni ay, yeni kampanyalar",
+                    if (active == 0) "Bu ayın kart ve şarj kampanyalarını ekle; şarjda en avantajlı kartı hatırlatayım."
+                    else "$active kampanya bu ay geçerli. Yeni duyuruları kontrol edip ekleyebilirsin.")
+                    .setContentIntent(Notifications.campaignsIntent(applicationContext, 81))
+                    .setPriority(NotificationCompat.PRIORITY_LOW),
+            )
+        }
         val count = c.charges.countIncompleteBefore(System.currentTimeMillis() - 24 * 3600_000L)
-        if (count > 0 && c.reminderState.tryAcquire("incomplete", 3 * 24 * 3600_000L)) {
+        if (s.incompleteRecordReminder && count > 0 && c.reminderState.tryAcquire("incomplete", 3 * 24 * 3600_000L)) {
             Notifications.post(
                 applicationContext, Notifications.ID_INCOMPLETE,
                 Notifications.builder(applicationContext, Notifications.CH_REMINDERS, "Eksik şarj kayıtları",

@@ -89,6 +89,13 @@ class AppFlowTest {
                 discountRate = s.disc, odometerBefore = s.odo, batteryBefore = s.bb, batteryAfter = s.ba, paymentMethod = "Kredi kartı"))
         }
         repo.addOdometerReading(3_862.0)
+        val today = java.time.LocalDate.now()
+        repo.saveCampaign(com.sarjdefteri.app.data.db.CampaignEntity(title = "Garanti · Tesla · %20", bank = "Garanti", operator = "Tesla",
+            discountRate = 20.0, maxDiscount = 150.0, validFrom = today.withDayOfMonth(1).toEpochDay(),
+            validTo = today.withDayOfMonth(today.lengthOfMonth()).toEpochDay()))
+        repo.saveCampaign(com.sarjdefteri.app.data.db.CampaignEntity(title = "Akbank · ZES · %15", bank = "Akbank", operator = "ZES",
+            discountRate = 15.0, maxDiscount = 75.0, validFrom = today.withDayOfMonth(1).toEpochDay(),
+            validTo = today.withDayOfMonth(today.lengthOfMonth()).toEpochDay()))
     }
 
     @Test fun addChargeEndToEnd() {
@@ -108,7 +115,10 @@ class AppFlowTest {
             compose.onNode(hasText("Önce") and hasSetTextAction()).performTextInput("21")
             compose.onNode(hasText("Sonra") and hasSetTextAction()).performTextInput("80")
             compose.waitForIdle()
+            waitForText("Uygun kampanya")
             shot("02-quick-entry")
+            compose.onNodeWithText("Uygula").performClick()
+            compose.waitForIdle()
             compose.onNodeWithText("Kaydet").performClick()
             waitForText("240 km") // 3950 - 3710
             compose.onNodeWithText("Şarj detayı").assertIsDisplayed()
@@ -118,7 +128,9 @@ class AppFlowTest {
         val saved = runBlocking { app.container.charges.allSessions.first() }.maxBy { it.startedAt }
         assertEquals(44.6, saved.energyKwh!!, 0.001)
         assertEquals(9.3, saved.unitPrice!!, 0.001)               // istasyondan hatırlandı
-        assertEquals(414.78, saved.totalPaid!!, 0.01)             // 44,6 × 9,3
+        assertEquals(82.96, saved.discountAmount!!, 0.01)         // %20 kampanya
+        assertEquals(331.82, saved.totalPaid!!, 0.01)             // 44,6 × 9,3 − 82,96
+        assertEquals("Garanti · Tesla · %20", saved.campaign)
         assertEquals("Garanti BBVA", saved.bank)                  // son kayıttan
     }
 
@@ -137,6 +149,9 @@ class AppFlowTest {
             waitForText("4 kayıt", substring = true)
             shot("05-history-filtered")
 
+            compose.onNodeWithText("Kampanya").performClick()
+            waitForText("Akbank · ZES · %15")
+            shot("10-campaigns")
             compose.onNodeWithText("Ayarlar").performClick()
             compose.waitForIdle()
             compose.onNodeWithText("Hatırlatmalar").assertIsDisplayed()

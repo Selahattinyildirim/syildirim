@@ -15,7 +15,7 @@ class Converters {
 }
 
 @Database(
-    entities = [ChargeSessionEntity::class, OdometerReadingEntity::class],
+    entities = [ChargeSessionEntity::class, OdometerReadingEntity::class, CampaignEntity::class],
     version = 1,
     exportSchema = true,
 )
@@ -23,6 +23,7 @@ class Converters {
 abstract class AppDatabase : RoomDatabase() {
     abstract fun chargeSessionDao(): ChargeSessionDao
     abstract fun odometerDao(): OdometerDao
+    abstract fun campaignDao(): CampaignDao
 
     companion object {
         fun build(context: Context): AppDatabase =

@@ -55,3 +55,19 @@ interface OdometerDao {
     @Insert suspend fun insert(entity: OdometerReadingEntity): Long
     @Delete suspend fun delete(entity: OdometerReadingEntity)
 }
+
+@Dao
+interface CampaignDao {
+    @Query("SELECT * FROM campaigns ORDER BY active DESC, COALESCE(valid_to, 99999999) ASC, discount_rate DESC")
+    fun observeAll(): Flow<List<CampaignEntity>>
+
+    @Query("SELECT * FROM campaigns")
+    suspend fun getAll(): List<CampaignEntity>
+
+    @Query("SELECT * FROM campaigns WHERE id = :id")
+    suspend fun get(id: Long): CampaignEntity?
+
+    @Insert suspend fun insert(e: CampaignEntity): Long
+    @Update suspend fun update(e: CampaignEntity)
+    @Delete suspend fun delete(e: CampaignEntity)
+}

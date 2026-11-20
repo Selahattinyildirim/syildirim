@@ -29,6 +29,7 @@ data class EntryPrefill(
         const val EXTRA_ROUTE = "route"
         const val ROUTE_ENTRY = "entry"
         const val ROUTE_ODOMETER = "odometer"
+        const val ROUTE_CAMPAIGNS = "campaigns"
 
         fun from(i: Intent): EntryPrefill? {
             if (i.getStringExtra(EXTRA_ROUTE) != ROUTE_ENTRY) return null

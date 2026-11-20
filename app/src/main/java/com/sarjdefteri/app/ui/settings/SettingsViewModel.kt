@@ -52,6 +52,7 @@ class SettingsViewModel(private val c: AppContainer) : ViewModel() {
     fun setNavWatch(v: Boolean) = viewModelScope.launch { c.settings.setNavigationWatch(v) }
     fun setIncomplete(v: Boolean) = viewModelScope.launch { c.settings.setIncompleteReminder(v) }
     fun setDetectBle(v: Boolean) = viewModelScope.launch { c.settings.setDetectTeslaBle(v) }
+    fun setCampaignReminder(v: Boolean) = viewModelScope.launch { c.settings.setCampaignMonthlyReminder(v) }
     fun setVehicleName(v: String) = viewModelScope.launch { c.settings.setVehicleName(v) }
     fun setProDebug(v: Boolean) = viewModelScope.launch { c.settings.setProDebugOverride(v) }
     fun setCapacity(v: Double) = viewModelScope.launch { c.settings.setBatteryCapacity(v.coerceIn(30.0, 120.0)) }

@@ -47,6 +47,11 @@ class MainActivity : ComponentActivity() {
             intent.removeExtra(EntryPrefill.EXTRA_ROUTE)
             return
         }
+        if (intent.getStringExtra(EntryPrefill.EXTRA_ROUTE) == EntryPrefill.ROUTE_CAMPAIGNS) {
+            container.pendingRoute.value = Routes.CAMPAIGNS
+            intent.removeExtra(EntryPrefill.EXTRA_ROUTE)
+            return
+        }
         if (intent.getStringExtra(EntryPrefill.EXTRA_ROUTE) == EntryPrefill.ROUTE_ODOMETER) {
             Notifications.cancel(this, Notifications.ID_CONNECT)
             container.pendingRoute.value = Routes.ODOMETER

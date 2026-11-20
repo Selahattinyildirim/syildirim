@@ -54,3 +54,27 @@ data class OdometerReadingEntity(
     @ColumnInfo(name = "battery_pct") val batteryPct: Double? = null,
     val source: OdometerSource = OdometerSource.MANUAL,
 )
+
+/** Kullanıcının girdiği banka/operatör kampanyası. Tarihler epochDay olarak saklanır. */
+@Entity(tableName = "campaigns", indices = [Index("valid_to")])
+data class CampaignEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val title: String,
+    val bank: String? = null,
+    val operator: String? = null,
+    @ColumnInfo(name = "discount_rate") val discountRate: Double,
+    @ColumnInfo(name = "max_discount") val maxDiscount: Double? = null,
+    @ColumnInfo(name = "min_spend") val minSpend: Double? = null,
+    @ColumnInfo(name = "valid_from") val validFrom: Long? = null,
+    @ColumnInfo(name = "valid_to") val validTo: Long? = null,
+    val notes: String? = null,
+    @ColumnInfo(name = "source_url") val sourceUrl: String? = null,
+    val active: Boolean = true,
+    @ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis(),
+) {
+    fun toCampaign() = com.sarjdefteri.core.Campaign(
+        id = id, title = title, bank = bank, operator = operator, discountRate = discountRate, maxDiscount = maxDiscount,
+        minSpend = minSpend, validFrom = validFrom?.let(java.time.LocalDate::ofEpochDay),
+        validTo = validTo?.let(java.time.LocalDate::ofEpochDay), active = active,
+    )
+}

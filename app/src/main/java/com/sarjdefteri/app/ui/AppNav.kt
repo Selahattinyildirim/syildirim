@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.LocalOffer
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -26,6 +27,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.sarjdefteri.app.AppContainer
+import com.sarjdefteri.app.ui.campaigns.CampaignEditScreen
+import com.sarjdefteri.app.ui.campaigns.CampaignEditViewModel
+import com.sarjdefteri.app.ui.campaigns.CampaignsScreen
+import com.sarjdefteri.app.ui.campaigns.CampaignsViewModel
 import com.sarjdefteri.app.ui.dashboard.DashboardScreen
 import com.sarjdefteri.app.ui.detail.DetailScreen
 import com.sarjdefteri.app.ui.entry.EntryScreen
@@ -47,6 +52,10 @@ object Routes {
     const val TESLA = "tesla"
     const val ODOMETER = "odometer"
     const val PRO = "pro"
+    const val CAMPAIGNS = "campaigns"
+    const val CAMPAIGN_NEW = "campaign/new"
+    const val CAMPAIGN_EDIT = "campaign/edit/{id}"
+    fun campaign(id: Long) = "campaign/edit/$id"
     const val ENTRY_NEW = "entry/new"
     const val ENTRY_EDIT = "entry/edit/{id}"
     const val DETAIL = "detail/{id}"
@@ -59,6 +68,7 @@ private data class Tab(val route: String, val label: String, val icon: ImageVect
 private val tabs = listOf(
     Tab(Routes.DASHBOARD, "Panel", Icons.Default.Dashboard),
     Tab(Routes.HISTORY, "Geçmiş", Icons.Default.History),
+    Tab(Routes.CAMPAIGNS, "Kampanya", Icons.Default.LocalOffer),
     Tab(Routes.SETTINGS, "Ayarlar", Icons.Default.Settings),
 )
 
@@ -96,6 +106,10 @@ fun AppNav(container: AppContainer) {
             }
         },
         floatingActionButton = {
+            if (current == Routes.CAMPAIGNS) {
+                FloatingActionButton(onClick = { nav.navigate(Routes.CAMPAIGN_NEW) }, containerColor = TeslaRed,
+                    contentColor = MaterialTheme.colorScheme.onSecondary) { Icon(Icons.Default.Add, "Kampanya ekle") }
+            }
             if (current == Routes.DASHBOARD || current == Routes.HISTORY) {
                 FloatingActionButton(onClick = { nav.navigate(Routes.ENTRY_NEW) }, containerColor = TeslaRed,
                     contentColor = MaterialTheme.colorScheme.onSecondary) { Icon(Icons.Default.Add, "Şarj ekle") }
@@ -106,7 +120,19 @@ fun AppNav(container: AppContainer) {
             composable(Routes.DASHBOARD) {
                 DashboardScreen(appViewModel { DashboardViewModel(it) }, padding,
                     onAdd = { nav.navigate(Routes.ENTRY_NEW) }, onOdometer = { nav.navigate(Routes.ODOMETER) },
-                    onPro = { nav.navigate(Routes.PRO) })
+                    onPro = { nav.navigate(Routes.PRO) }, onCampaigns = { nav.navigate(Routes.CAMPAIGNS) {
+                        popUpTo(nav.graph.findStartDestination().id) { saveState = true }; launchSingleTop = true; restoreState = true } })
+            }
+            composable(Routes.CAMPAIGNS) {
+                CampaignsScreen(appViewModel { CampaignsViewModel(it) }, padding, onEdit = { id ->
+                    nav.navigate(if (id == null) Routes.CAMPAIGN_NEW else Routes.campaign(id)) })
+            }
+            composable(Routes.CAMPAIGN_NEW) { entry ->
+                CampaignEditScreen(appViewModel(key = "cnew-${entry.id}") { CampaignEditViewModel(it, null) }, onBack = { nav.popBackStack() })
+            }
+            composable(Routes.CAMPAIGN_EDIT, arguments = listOf(navArgument("id") { type = NavType.LongType })) { entry ->
+                val id = entry.arguments!!.getLong("id")
+                CampaignEditScreen(appViewModel(key = "cedit-$id") { CampaignEditViewModel(it, id) }, onBack = { nav.popBackStack() })
             }
             composable(Routes.HISTORY) {
                 HistoryScreen(appViewModel { HistoryViewModel(it) }, padding, onOpen = { nav.navigate(Routes.detail(it)) },

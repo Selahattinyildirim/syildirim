@@ -1,6 +1,6 @@
-# Tesla Şarj Takip (Android)
+# Şarj Defteri (Android)
 
-Tesla Model Y Juniper için şarj geçmişini, maliyetleri, kilometre ve tüketimi takip eden **çevrimdışı öncelikli** Android uygulaması.
+Elektrikli araçlar (Tesla, Togg ve diğerleri) için şarj geçmişini, maliyetleri, kilometre ve tüketimi takip eden **çevrimdışı öncelikli** Android uygulaması.
 Kotlin + Jetpack Compose (Material 3), Room, WorkManager, DataStore. Harici sunucu, hesap veya analitik yoktur.
 
 ## Özellikler
@@ -22,6 +22,8 @@ Kotlin + Jetpack Compose (Material 3), Room, WorkManager, DataStore. Harici sunu
 | Tesla Fleet API: km, batarya, şarj durumu, eklenen enerji, şarj başlangıç/bitiş | ✅ (geliştirici hesabı gerekir) |
 | Şarj bitince bildirimden önceden doldurulmuş hızlı kayıt | ✅ (API ile otomatik; API'siz "sonra hatırlat") |
 | Navigasyon hedefi şarj istasyonuysa varış öncesi soru | ✅ (API ile, isteğe bağlı) |
+| Banka kartı / operatör kampanyaları: şarjda en avantajlı kart önerisi, otomatik indirim, aylık hatırlatma | ✅ |
+| Pro (Google Play tek seferlik satın alma): Tesla otomasyonu, gelişmiş analizler, Excel | ✅ |
 
 ## Mimari
 
@@ -82,16 +84,22 @@ dışa aktarılır, sonraki sürümlerde migration yazılabilir.
 * Tesla access/refresh token ve client secret, **Android Keystore AES-256-GCM** anahtarıyla şifrelenip saklanır, yedeklemeye dahil edilmez.
 * Kaynak kodda hiçbir anahtar/token yoktur; kullanıcı kendi Client ID/Secret'ını uygulama içinde girer.
 
+## Mağaza ve gelir planı
+
+Pazar araştırması, gelir modeli, kampanyaların hukuki çerçevesi ve Play Console adımları için [docs/PLAY_STORE.md](docs/PLAY_STORE.md),
+gizlilik politikası için [docs/PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md).
+
 ## Derleme
 
 Gereksinimler: JDK 17+, Android SDK (platform 35, build-tools 35).
 
 ```bash
 ./gradlew test               # core + Robolectric (Room, hatırlatmalar, uçtan uca UI) testleri
-./gradlew assembleRelease    # app/build/outputs/apk/release/app-release.apk
+./gradlew assembleRelease    # imzalı APK: app/build/outputs/apk/release/app-release.apk
+./gradlew bundleRelease      # Play paketi: app/build/outputs/bundle/release/app-release.aab
 ```
-Release APK yerel kurulum kolaylığı için debug anahtarıyla imzalanır; mağaza/uzun vadeli dağıtım için kendi keystore'unuzu `signingConfigs`'e ekleyin
-(farklı anahtarla imzalı sürüm, mevcut kurulumun üzerine yüklenemez).
+İmza: `signing/keystore.properties` (git'e eklenmez) veya `SD_STORE_FILE`, `SD_STORE_PASSWORD`, `SD_KEY_ALIAS`, `SD_KEY_PASSWORD` ortam
+değişkenleri. Anahtar yoksa release yalnızca yerel deneme için debug anahtarıyla imzalanır.
 
 Kurulum: APK'yı telefona aktarıp açın ("Bilinmeyen kaynaklardan yükleme" izni gerekir). İlk açılışta bildirim izni istenir; Bluetooth izni
 Ayarlar → Araç Bluetooth'u bölümünden verilir.

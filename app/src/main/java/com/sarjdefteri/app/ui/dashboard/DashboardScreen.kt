@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocalOffer
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -25,6 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sarjdefteri.app.ui.DashboardViewModel
+import com.sarjdefteri.app.ui.campaigns.campaignSummary
+import com.sarjdefteri.app.ui.campaigns.campaignValidity
 import com.sarjdefteri.app.ui.Fmt
 import com.sarjdefteri.app.ui.components.BarChart
 import com.sarjdefteri.app.ui.components.ChartPoint
@@ -40,8 +43,9 @@ import com.sarjdefteri.app.ui.theme.ChartTeal
 import com.sarjdefteri.app.ui.theme.TeslaRed
 
 @Composable
-fun DashboardScreen(vm: DashboardViewModel, contentPadding: PaddingValues, onAdd: () -> Unit, onOdometer: () -> Unit, onPro: () -> Unit) {
+fun DashboardScreen(vm: DashboardViewModel, contentPadding: PaddingValues, onAdd: () -> Unit, onOdometer: () -> Unit, onPro: () -> Unit, onCampaigns: () -> Unit) {
     val a by vm.analytics.collectAsState()
+    val campaigns by vm.activeCampaigns.collectAsState()
     val settings by vm.settings.collectAsState()
     val t = a.totals
     val s = a.summary
@@ -57,6 +61,26 @@ fun DashboardScreen(vm: DashboardViewModel, contentPadding: PaddingValues, onAdd
                 Text(settings.vehicleName, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(Fmt.tl(t?.totalCost ?: 0.0), style = MaterialTheme.typography.displaySmall)
                 Text("Toplam şarj harcaması", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+
+        item {
+            SectionCard(title = "Bu ayın kampanyaları", modifier = Modifier.clickable(onClick = onCampaigns)) {
+                if (campaigns.isEmpty()) {
+                    Text("Kart ve operatör kampanyalarını ekle; şarj kaydında en avantajlı kart önerilsin.",
+                        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                } else campaigns.take(3).forEach { c ->
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 2.dp)) {
+                        Icon(Icons.Default.LocalOffer, null, tint = TeslaRed)
+                        Column(Modifier.weight(1f).padding(start = 12.dp)) {
+                            Text(c.title, style = MaterialTheme.typography.bodyLarge, maxLines = 1)
+                            Text(campaignValidity(c), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                        Text(campaignSummary(c).substringBefore(" ·"), style = MaterialTheme.typography.titleMedium, color = TeslaRed)
+                    }
+                }
+                if (campaigns.size > 3) Text("+${campaigns.size - 3} kampanya daha", style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 

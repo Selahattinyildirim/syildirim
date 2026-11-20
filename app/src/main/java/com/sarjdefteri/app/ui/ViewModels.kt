@@ -72,6 +72,10 @@ fun buildAnalytics(sessions: List<ChargeSessionEntity>, readings: List<OdometerR
 }
 
 class DashboardViewModel(c: AppContainer) : ViewModel() {
+    val activeCampaigns = c.charges.campaigns.map { all ->
+        val today = java.time.LocalDate.now()
+        all.filter { it.toCampaign().isValidOn(today) }.sortedByDescending { it.discountRate }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val settings = c.settings.settings.stateIn(viewModelScope, SharingStarted.Eagerly, com.sarjdefteri.app.data.settings.AppSettings())
     val analytics: StateFlow<Analytics> = combine(c.charges.allSessions, c.charges.odometerReadings, c.settings.settings) { s, r, st ->
         withContext(Dispatchers.Default) { buildAnalytics(s, r, st.batteryCapacityKwh) }

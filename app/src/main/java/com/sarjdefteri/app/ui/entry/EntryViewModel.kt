@@ -56,6 +56,37 @@ class EntryViewModel(private val c: AppContainer, private val editId: Long?) : V
     val payments = c.charges.paymentMethods.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     val isEdit get() = editId != null
+    val campaigns = c.charges.campaigns.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    /** Tarih/istasyon/bankaya uyan en iyi kampanyalar (banka seçilmemişse karta göre öneri). */
+    fun campaignSuggestions(): List<com.sarjdefteri.core.CampaignMatcher.Suggestion> {
+        val date = java.time.Instant.ofEpochMilli(form.startedAt).atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+        return com.sarjdefteri.core.CampaignMatcher.suggestions(
+            campaigns.value.map { it.toCampaign() }, date, form.station.ifBlank { null }, form.bank.ifBlank { null }, grossAmount(),
+        ).take(2)
+    }
+
+    /** İndirim öncesi tutar: enerji × birim, yoksa girilen tutar (kampanya öncesi kabul edilir). */
+    private fun grossAmount(): Double? {
+        val e = Fmt.parse(form.energy); val u = Fmt.parse(form.unit)
+        return if (e != null && u != null) e * u else Fmt.parse(form.total)
+    }
+
+    fun applyCampaign(s: com.sarjdefteri.core.CampaignMatcher.Suggestion) {
+        val c = s.campaign
+        var f = form.copy(campaign = c.title, bank = form.bank.ifBlank { c.bank.orEmpty() })
+        val e = Fmt.parse(f.energy); val u = Fmt.parse(f.unit); val t = Fmt.parse(f.total)
+        val gross = if (e != null && u != null) e * u else t
+        if (gross != null && gross > 0) {
+            val d = c.discountFor(gross)
+            f = f.copy(discountAmount = Fmt.input(Math.round(d * 100) / 100.0), discountRate = Fmt.input(Math.round(d / gross * 10000) / 100.0))
+            f = if (e != null && u != null) f.copy(total = "")            // toplam yeniden hesaplanır
+            else f.copy(total = Fmt.input(Math.round((gross - d) * 100) / 100.0), unit = e?.let { Fmt.input(Math.round(gross / it * 10000) / 10000.0) } ?: f.unit)
+        } else {
+            f = f.copy(discountRate = Fmt.input(c.discountRate))
+        }
+        form = f
+    }
 
     init {
         viewModelScope.launch {

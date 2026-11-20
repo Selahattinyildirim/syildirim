@@ -25,6 +25,7 @@ object Notifications {
     const val ID_NAVIGATION = 1005
     const val ID_INCOMPLETE = 1006
     const val ID_REMIND_LATER = 1007
+    const val ID_CAMPAIGNS = 1008
 
     fun createChannels(context: Context) {
         val nm = context.getSystemService(NotificationManager::class.java)
@@ -58,6 +59,9 @@ object Notifications {
 
     fun odometerIntent(context: Context, requestCode: Int) =
         openAppIntent(context, requestCode) { putExtra(EntryPrefill.EXTRA_ROUTE, EntryPrefill.ROUTE_ODOMETER) }
+
+    fun campaignsIntent(context: Context, requestCode: Int) =
+        openAppIntent(context, requestCode) { putExtra(EntryPrefill.EXTRA_ROUTE, EntryPrefill.ROUTE_CAMPAIGNS) }
 
     fun homeIntent(context: Context, requestCode: Int) = openAppIntent(context, requestCode) {}
 

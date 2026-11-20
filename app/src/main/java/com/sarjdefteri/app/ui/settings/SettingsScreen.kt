@@ -87,6 +87,7 @@ fun SettingsScreen(vm: SettingsViewModel, contentPadding: PaddingValues, onTesla
                     HorizontalDivider()
                     ToggleRow("Araca binince km sor", "Bluetooth bağlantısında, en fazla 3 saatte bir", s.remindOnConnect, vm::setConnect)
                     ToggleRow("Araçtan ayrılınca hatırlat", "Bağlantı kesildikten 3 dk sonra, 4 saatte bir", s.remindOnDisconnect, vm::setDisconnect)
+                    ToggleRow("Aylık kampanya hatırlatması", "Ayın ilk günlerinde bir kez", s.campaignMonthlyReminder, vm::setCampaignReminder)
                     ToggleRow("Eksik kayıt hatırlatması", "Günlük kontrol, 3 günde bir bildirim", s.incompleteRecordReminder, vm::setIncomplete)
                     ToggleRow("Şarj algılama (Tesla API)", "Araçtan ayrılınca şarjda mı diye kontrol eder; aracı uyandırmaz",
                         s.chargeDetectionViaApi, vm::setChargeDetection, enabled = teslaConnected)

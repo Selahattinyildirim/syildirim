@@ -43,6 +43,9 @@ data class AppSettings(
     val proPurchased: Boolean = false,
     /** Yalnızca debug derlemelerinde: Pro özelliklerini test etmek için. */
     val proDebugOverride: Boolean = false,
+    /** Kullanıcının takip ettiği kampanya kaynağı (ör. bir WhatsApp kanalı veya banka sayfası). */
+    val campaignSourceUrl: String = "",
+    val campaignMonthlyReminder: Boolean = true,
 ) {
     val isPro: Boolean get() = proPurchased || proDebugOverride
 
@@ -73,6 +76,8 @@ class SettingsRepository(private val context: Context) {
         val carName = stringPreferencesKey("vehicle_name")
         val pro = booleanPreferencesKey("pro_purchased")
         val proDebug = booleanPreferencesKey("pro_debug_override")
+        val campaignUrl = stringPreferencesKey("campaign_source_url")
+        val campaignReminder = booleanPreferencesKey("campaign_monthly_reminder")
     }
 
     val settings: Flow<AppSettings> = context.dataStore.data.map { p -> p.toSettings() }
@@ -100,7 +105,12 @@ class SettingsRepository(private val context: Context) {
         vehicleName = this[K.carName] ?: "Aracım",
         proPurchased = this[K.pro] ?: false,
         proDebugOverride = this[K.proDebug] ?: false,
+        campaignSourceUrl = this[K.campaignUrl] ?: "",
+        campaignMonthlyReminder = this[K.campaignReminder] ?: true,
     )
+
+    suspend fun setCampaignSourceUrl(v: String) = context.dataStore.edit { it[K.campaignUrl] = v.trim() }
+    suspend fun setCampaignMonthlyReminder(v: Boolean) = context.dataStore.edit { it[K.campaignReminder] = v }
 
     suspend fun setVehicleName(v: String) = context.dataStore.edit { it[K.carName] = v.trim().ifEmpty { "Aracım" }.take(40) }
     suspend fun setProPurchased(v: Boolean) = context.dataStore.edit { it[K.pro] = v }
