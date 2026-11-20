@@ -66,7 +66,7 @@ dışa aktarılır, sonraki sürümlerde migration yazılabilir.
 
 ### Tesla Fleet API
 * Üçüncü taraf erişim yalnızca resmi **Fleet API** ile: developer.tesla.com'da hesap + uygulama (Client ID/Secret), izinli Redirect URI
-  (`teslachargetracker://oauth/callback`; tarayıcı dönmezse yönlendirme adresi yapıştırılabilir), kendi alan adında
+  (`sarjdefteri://oauth/callback`; tarayıcı dönmezse yönlendirme adresi yapıştırılabilir), kendi alan adında
   `/.well-known/appspecific/com.tesla.3p.public-key.pem` yayınlanması ve bölge kaydı (`partner_accounts`, uygulamada butonu var).
   Public key için: `openssl ecparam -name prime256v1 -genkey -noout -out private.pem && openssl ec -in private.pem -pubout -out public.pem`
   (yalnızca okuma yapıldığından private key uygulamada kullanılmaz). Türkiye için bölge **Avrupa** (`fleet-api.prd.eu.vn.cloud.tesla.com`).

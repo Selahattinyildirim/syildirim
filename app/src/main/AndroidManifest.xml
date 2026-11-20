@@ -15,7 +15,7 @@
     <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
 
     <application
-        android:name=".TeslaChargeApp"
+        android:name=".SarjDefteriApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -23,7 +23,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TeslaCharge"
+        android:theme="@style/Theme.SarjDefteri"
         tools:targetApi="35">
 
         <activity
@@ -31,17 +31,17 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.TeslaCharge">
+            android:theme="@style/Theme.SarjDefteri">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- Tesla OAuth yönlendirmesi: teslachargetracker://oauth/callback -->
+            <!-- Tesla OAuth yönlendirmesi: sarjdefteri://oauth/callback -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="teslachargetracker" android:host="oauth" />
+                <data android:scheme="sarjdefteri" android:host="oauth" />
             </intent-filter>
         </activity>
 

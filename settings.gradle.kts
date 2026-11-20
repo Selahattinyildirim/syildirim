@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "TeslaChargeTracker"
+rootProject.name = "SarjDefteri"
 include(":core", ":app")
