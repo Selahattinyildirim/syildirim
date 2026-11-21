@@ -44,8 +44,7 @@ object CampaignMatcher {
     data class Suggestion(val campaign: Campaign, val discount: Double?)
 
     /** Türkçe karakter ve büyük/küçük harf duyarsız karşılaştırma. */
-    fun normalize(s: String): String = s.trim().lowercase(java.util.Locale("tr", "TR"))
-        .replace('ı', 'i').replace('ş', 's').replace('ğ', 'g').replace('ü', 'u').replace('ö', 'o').replace('ç', 'c')
+    fun normalize(s: String): String = TextNorm.normalize(s)
 
     /**
      * Verilen tarih/istasyon/banka için uygun kampanyaları en yüksek indirimden başlayarak döndürür.
