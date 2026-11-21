@@ -111,7 +111,10 @@ fun SettingsScreen(vm: SettingsViewModel, contentPadding: PaddingValues, onTesla
 
             SectionCard(title = "Şarj uygulaması bildirimleri" + if (s.isPro) "" else " · Pro",
                 subtitle = "ZES, Trugo, Eşarj gibi uygulamalar şarj bitti dediğinde kayıt hazırlanır") {
-                if (!s.isPro) {
+                if (!BuildConfig.OPERATOR_NOTIFICATIONS) {
+                    Text("Bu özellik Google Play sürümünde kullanılabilir. Google, Play dışından kurulan uygulamaların bildirim erişimi istemesini güvenlik nedeniyle engelliyor.",
+                        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                } else if (!s.isPro) {
                     Text("Operatör bildirimlerinden kWh ve tutarı okuyup kaydı otomatik hazırlar.",
                         style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     OutlinedButton(onClick = onPro, modifier = Modifier.fillMaxWidth()) { Text("Pro ile aç") }

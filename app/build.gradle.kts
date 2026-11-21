@@ -49,6 +49,21 @@ android {
         }
     }
 
+    // play: Google Play dağıtımı (tüm özellikler). direct: APK ile doğrudan kurulum — Play Protect, Play dışından
+    // kurulan ve bildirim erişimi isteyen uygulamaları engellediği için bildirim dinleyicisi bu sürümde yoktur.
+    flavorDimensions += "dist"
+    productFlavors {
+        create("play") {
+            dimension = "dist"
+            buildConfigField("boolean", "OPERATOR_NOTIFICATIONS", "true")
+        }
+        create("direct") {
+            dimension = "dist"
+            buildConfigField("boolean", "OPERATOR_NOTIFICATIONS", "false")
+            versionNameSuffix = "-apk"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

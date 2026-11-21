@@ -103,8 +103,8 @@ Gereksinimler: JDK 17+, Android SDK (platform 35, build-tools 35).
 
 ```bash
 ./gradlew test               # core + Robolectric (Room, hatırlatmalar, uçtan uca UI) testleri
-./gradlew assembleRelease    # imzalı APK: app/build/outputs/apk/release/app-release.apk
-./gradlew bundleRelease      # Play paketi: app/build/outputs/bundle/release/app-release.aab
+./gradlew assembleDirectRelease  # doğrudan kurulum APK: app/build/outputs/apk/direct/release/ (bildirim dinleyicisiz)
+./gradlew bundlePlayRelease      # Play paketi: app/build/outputs/bundle/playRelease/app-play-release.aab
 ```
 İmza: `signing/keystore.properties` (git'e eklenmez) veya `SD_STORE_FILE`, `SD_STORE_PASSWORD`, `SD_KEY_ALIAS`, `SD_KEY_PASSWORD` ortam
 değişkenleri. Anahtar yoksa release yalnızca yerel deneme için debug anahtarıyla imzalanır.

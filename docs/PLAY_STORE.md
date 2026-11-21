@@ -59,7 +59,7 @@ Asıl fırsat Togg ve Tesla topluluklarında (forumlar, Facebook/WhatsApp grupla
 ## 5. Play Console kontrol listesi
 1. Geliştirici hesabı (tek seferlik 25 $). Kişisel hesaplarda **üretime çıkmadan önce en az 12 test kullanıcısıyla 14 gün kapalı test** şartı var (Google'ın yeni kişisel hesaplar için koyduğu kural; güncel durumunu Console'da kontrol edin).
 2. Uygulama oluştur → paket: `com.sarjdefteri.app` → Play App Signing'i kabul et.
-3. `./gradlew bundleRelease` → `app/build/outputs/bundle/release/app-release.aab` dosyasını kapalı test kanalına yükle.
+3. `./gradlew bundlePlayRelease` → `app/build/outputs/bundle/playRelease/app-play-release.aab` dosyasını kapalı test kanalına yükle.
 4. Para kazanma → Uygulama içi ürünler → `sarj_defteri_pro` oluştur, fiyatı belirle (ödeme profili ve vergi bilgisi gerekir).
 5. Gizlilik politikası URL'si: `docs/PRIVACY_POLICY.md`'yi GitHub Pages veya basit bir web sayfasında yayınla.
 6. **Bildirim erişimi beyanı:** Mağaza açıklamasında ve uygulama içinde amacı açıkça yaz (seçilen şarj uygulamalarının bildiriminden
