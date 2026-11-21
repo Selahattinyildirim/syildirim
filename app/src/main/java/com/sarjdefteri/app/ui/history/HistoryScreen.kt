@@ -61,7 +61,7 @@ import com.sarjdefteri.app.ui.HistoryViewModel
 import com.sarjdefteri.app.ui.components.DateTimePickerDialog
 import com.sarjdefteri.app.ui.components.EmptyState
 import com.sarjdefteri.app.ui.components.NumberField
-import com.sarjdefteri.app.ui.theme.TeslaRed
+import com.sarjdefteri.app.ui.theme.BrandRed
 import java.time.LocalDate
 import java.time.ZoneId
 
@@ -90,7 +90,7 @@ fun HistoryScreen(vm: HistoryViewModel, contentPadding: PaddingValues, onOpen: (
             title = { Text("Şarj geçmişi") },
             actions = {
                 IconButton(onClick = { showFilters = true }) {
-                    BadgedBox(badge = { if (filter.isActive) Badge(containerColor = TeslaRed) }) { Icon(Icons.Default.FilterList, "Filtrele") }
+                    BadgedBox(badge = { if (filter.isActive) Badge(containerColor = BrandRed) }) { Icon(Icons.Default.FilterList, "Filtrele") }
                 }
                 Column {
                     IconButton(onClick = { exportMenu = true }) { Icon(Icons.Default.FileDownload, "Dışa aktar") }
@@ -167,7 +167,7 @@ private fun SessionRow(s: ChargeSessionEntity, seg: UsageCalculator.Segment?, on
                 if (seg?.odometerError == true) "Km tutarsız" else null,
             )
             if (tags.isNotEmpty()) {
-                Text(tags.joinToString("  •  "), style = MaterialTheme.typography.labelSmall, color = TeslaRed, modifier = Modifier.padding(top = 4.dp))
+                Text(tags.joinToString("  •  "), style = MaterialTheme.typography.labelSmall, color = BrandRed, modifier = Modifier.padding(top = 4.dp))
             }
         }
     }

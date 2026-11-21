@@ -46,6 +46,13 @@ data class AppSettings(
     /** Kullanıcının takip ettiği kampanya kaynağı (ör. bir WhatsApp kanalı veya banka sayfası). */
     val campaignSourceUrl: String = "",
     val campaignMonthlyReminder: Boolean = true,
+    /** Seçili araç (katalog kimliği; "custom" = elle girilen). */
+    val vehiclePresetId: String = "",
+    val vehicleBrand: String = "",
+    val onboarded: Boolean = false,
+    /** Bildirimleri izlenecek şarj operatörü uygulamalarının paket adları. */
+    val watchedApps: Set<String> = emptySet(),
+    val operatorNotifications: Boolean = true,
 ) {
     val isPro: Boolean get() = proPurchased || proDebugOverride
 
@@ -78,6 +85,11 @@ class SettingsRepository(private val context: Context) {
         val proDebug = booleanPreferencesKey("pro_debug_override")
         val campaignUrl = stringPreferencesKey("campaign_source_url")
         val campaignReminder = booleanPreferencesKey("campaign_monthly_reminder")
+        val presetId = stringPreferencesKey("vehicle_preset_id")
+        val brand = stringPreferencesKey("vehicle_brand")
+        val onboarded = booleanPreferencesKey("onboarded")
+        val watched = stringSetPreferencesKey("watched_apps")
+        val opNotif = booleanPreferencesKey("operator_notifications")
     }
 
     val settings: Flow<AppSettings> = context.dataStore.data.map { p -> p.toSettings() }
@@ -107,7 +119,23 @@ class SettingsRepository(private val context: Context) {
         proDebugOverride = this[K.proDebug] ?: false,
         campaignSourceUrl = this[K.campaignUrl] ?: "",
         campaignMonthlyReminder = this[K.campaignReminder] ?: true,
+        vehiclePresetId = this[K.presetId] ?: "",
+        vehicleBrand = this[K.brand] ?: "",
+        onboarded = this[K.onboarded] ?: false,
+        watchedApps = this[K.watched] ?: emptySet(),
+        operatorNotifications = this[K.opNotif] ?: true,
     )
+
+    /** Araç profili: ad, marka, kapasite; ilk açılış tamamlanır. */
+    suspend fun setVehicleProfile(presetId: String, brand: String, name: String, capacityKwh: Double) = context.dataStore.edit {
+        it[K.presetId] = presetId; it[K.brand] = brand.trim(); it[K.carName] = name.trim().ifEmpty { "Aracım" }.take(40)
+        it[K.capacity] = capacityKwh.coerceIn(10.0, 150.0); it[K.onboarded] = true
+    }
+    /** Tüm ayarları varsayılana döndürür (testler ve "ayarları sıfırla" için). */
+    suspend fun resetAll() = context.dataStore.edit { it.clear() }
+
+    suspend fun setWatchedApps(v: Set<String>) = context.dataStore.edit { it[K.watched] = v }
+    suspend fun setOperatorNotifications(v: Boolean) = context.dataStore.edit { it[K.opNotif] = v }
 
     suspend fun setCampaignSourceUrl(v: String) = context.dataStore.edit { it[K.campaignUrl] = v.trim() }
     suspend fun setCampaignMonthlyReminder(v: Boolean) = context.dataStore.edit { it[K.campaignReminder] = v }

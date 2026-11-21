@@ -13,9 +13,12 @@ Son güncelleme: 21 Kasım 2026
 - **Bildirimler:** Hatırlatma göndermek için.
 - **Yakındaki cihazlar (Bluetooth bağlantısı):** Yalnızca seçtiğiniz aracın Bluetooth bağlantı/kopma olaylarını algılamak için.
   Cihaz taraması yapılmaz, konum izni istenmez.
-- **İnternet:** Yalnızca isteğe bağlı Tesla bağlantısı ve Google Play satın alımları için.
+- **Bildirim erişimi (isteğe bağlı, Pro):** Yalnızca sizin seçtiğiniz şarj operatörü uygulamalarının (ör. ZES, Trugo, Eşarj)
+  bildirimlerinde "şarj başladı / tamamlandı / ödeme" bilgisini, kWh ve tutarı cihaz üzerinde okumak ve size kayıt önerisi
+  göstermek için kullanılır. Seçilmemiş uygulamaların bildirimleri işlenmez. Bildirim içerikleri saklanmaz, cihaz dışına gönderilmez.
+- **İnternet:** Yalnızca isteğe bağlı araç bağlantısı (Tesla) ve Google Play satın alımları için.
 
-## Tesla bağlantısı (isteğe bağlı)
+## Araç bağlantısı – Tesla (isteğe bağlı)
 Tesla hesabınızı bağlarsanız uygulama, Tesla'nın resmi Fleet API'si üzerinden araç kilometresi, batarya ve şarj durumunu
 **doğrudan Tesla sunucularından cihazınıza** okur. Erişim anahtarları cihazınızda Android Keystore ile şifrelenir ve yedeklenmez.
 Bağlantıyı istediğiniz zaman Ayarlar'dan kaldırabilirsiniz; anahtarlar silinir.

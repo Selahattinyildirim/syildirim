@@ -11,7 +11,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-val TeslaRed = Color(0xFFE31937)
+val BrandRed = Color(0xFFE31937)
 val ChartBlue = Color(0xFF3E6AE1)
 val ChartTeal = Color(0xFF1BA39C)
 val ChartAmber = Color(0xFFE8A33D)
@@ -19,7 +19,7 @@ val ChartAmber = Color(0xFFE8A33D)
 private val Dark = darkColorScheme(
     primary = Color(0xFFF4F4F4),
     onPrimary = Color(0xFF111214),
-    secondary = TeslaRed,
+    secondary = BrandRed,
     onSecondary = Color.White,
     tertiary = ChartBlue,
     background = Color(0xFF0B0B0C),
@@ -39,7 +39,7 @@ private val Dark = darkColorScheme(
 private val Light = lightColorScheme(
     primary = Color(0xFF171A20),
     onPrimary = Color.White,
-    secondary = TeslaRed,
+    secondary = BrandRed,
     onSecondary = Color.White,
     tertiary = ChartBlue,
     background = Color(0xFFF7F7F8),

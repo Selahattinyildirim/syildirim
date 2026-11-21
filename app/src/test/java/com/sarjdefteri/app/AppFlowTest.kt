@@ -68,8 +68,9 @@ class AppFlowTest {
     private fun launch(): ActivityScenario<MainActivity> = ActivityScenario.launch(MainActivity::class.java).also { scenario = it }
 
     private fun seed() = runBlocking {
+        app.container.settings.resetAll()
         app.container.settings.setProDebugOverride(true)
-        app.container.settings.setVehicleName("Model Y")
+        app.container.settings.setVehicleProfile("tesla-my-lr", "Tesla", "Model Y", 75.0)
         val repo = app.container.charges
         val zone = ZoneId.systemDefault()
         val now = LocalDateTime.now()

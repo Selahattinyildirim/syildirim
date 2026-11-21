@@ -40,13 +40,15 @@ class RemindersTest {
 
     @Test fun deviceMatching() {
         val engine = app.container.reminderEngine
-        val none = AppSettings()
-        assertTrue(engine.matches(none, "00:11", "Tesla Model Y"))
+        val none = AppSettings(vehicleBrand = "Togg")
+        assertTrue(engine.matches(none, "00:11", "TOGG T10X"))
+        assertFalse(engine.matches(none, "00:11", "Tesla Model Y"))
         assertFalse(engine.matches(none, "00:11", "JBL Flip"))
+        assertFalse(engine.matches(AppSettings(), "00:11", "TOGG T10X")) // marka seçilmemiş
         val selected = AppSettings(bluetoothDeviceAddresses = setOf("00:11"))
         assertTrue(engine.matches(selected, "00:11", "Benim Arabam"))
         assertFalse(engine.matches(selected, "22:33", "Tesla Model Y"))
-        val ble = selected.copy(detectTeslaBleNames = true)
+        val ble = selected.copy(detectTeslaBleNames = true, vehicleBrand = "Tesla")
         assertTrue(engine.matches(ble, "44:55", TeslaBleName.forVin("XP7YGCEK0RB000000")))
     }
 

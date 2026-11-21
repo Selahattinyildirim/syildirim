@@ -21,11 +21,11 @@ class ReminderEngine(
     fun matches(s: AppSettings, address: String, name: String?): Boolean {
         if (address in s.bluetoothDeviceAddresses) return true
         if (name != null && name in s.bluetoothDeviceNames) return true
-        if (s.detectTeslaBleNames && TeslaBleName.looksLikeTesla(name)) return true
-        // Hiç cihaz seçilmemişse varsayılan araç adlarını kabul et
-        if (s.bluetoothDeviceAddresses.isEmpty() && name != null) {
-            val n = name.lowercase()
-            return n.contains("tesla") || n.contains("model y")
+        val brand = com.sarjdefteri.core.TextNorm.normalize(s.vehicleBrand)
+        if (s.detectTeslaBleNames && brand == "tesla" && TeslaBleName.looksLikeTesla(name)) return true
+        // Hiç cihaz seçilmemişse: cihaz adında seçili aracın markası geçiyorsa kabul et (ör. "TOGG T10X").
+        if (s.bluetoothDeviceAddresses.isEmpty() && name != null && brand.length >= 2) {
+            return com.sarjdefteri.core.TextNorm.normalize(name).contains(brand)
         }
         return false
     }
@@ -72,7 +72,7 @@ class ReminderEngine(
         val since = sinceLastChargeText()
         Notifications.post(
             context, Notifications.ID_CONNECT,
-            Notifications.builder(context, Notifications.CH_REMINDERS, "Tesla'ya mı bindin?",
+            Notifications.builder(context, Notifications.CH_REMINDERS, "Araca mı bindin?",
                 "Son şarjından bu yana yaptığın kilometreyi kaydedelim.$since")
                 .setContentIntent(Notifications.odometerIntent(context, 11))
                 .addAction(0, "Km gir", Notifications.odometerIntent(context, 12))

@@ -11,6 +11,7 @@ data class EntryPrefill(
     val batteryAfter: Double? = null,
     val odometer: Double? = null,
     val station: String? = null,
+    val totalPaid: Double? = null,
     val fromApi: Boolean = false,
 ) {
     fun writeTo(i: Intent): Intent = i.apply {
@@ -22,6 +23,7 @@ data class EntryPrefill(
         batteryAfter?.let { putExtra("p_ba", it) }
         odometer?.let { putExtra("p_odo", it) }
         station?.let { putExtra("p_station", it) }
+        totalPaid?.let { putExtra("p_total", it) }
         putExtra("p_api", fromApi)
     }
 
@@ -36,7 +38,7 @@ data class EntryPrefill(
             fun d(k: String) = if (i.hasExtra(k)) i.getDoubleExtra(k, 0.0) else null
             fun l(k: String) = if (i.hasExtra(k)) i.getLongExtra(k, 0L) else null
             return EntryPrefill(l("p_start"), l("p_end"), d("p_energy"), d("p_bb"), d("p_ba"), d("p_odo"),
-                i.getStringExtra("p_station"), i.getBooleanExtra("p_api", false))
+                i.getStringExtra("p_station"), d("p_total"), i.getBooleanExtra("p_api", false))
         }
     }
 }

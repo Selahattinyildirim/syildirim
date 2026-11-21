@@ -49,6 +49,7 @@ class EntryViewModel(private val c: AppContainer, private val editId: Long?) : V
     var lastKnownOdometer by mutableStateOf<Double?>(null)
         private set
     private var existing: ChargeSessionEntity? = null
+    private var fromNotification = false
     private var lastUnitByStation: Map<String, Double> = emptyMap()
 
     val stations = c.charges.stations.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -107,7 +108,8 @@ class EntryViewModel(private val c: AppContainer, private val editId: Long?) : V
                 var f = EntryForm(bank = last?.bank.orEmpty(), payment = last?.paymentMethod.orEmpty())
                 c.pendingPrefill.value?.let { p ->
                     c.pendingPrefill.value = null
-                    autoFilledFromApi = p.fromApi
+                    autoFilledFromApi = p.fromApi || p.energyKwh != null || p.totalPaid != null
+                    fromNotification = !p.fromApi && autoFilledFromApi
                     f = f.copy(
                         startedAt = p.startedAt ?: f.startedAt,
                         endedAt = p.endedAt,
@@ -116,6 +118,7 @@ class EntryViewModel(private val c: AppContainer, private val editId: Long?) : V
                         battAfter = Fmt.input(p.batteryAfter),
                         odoBefore = Fmt.input(p.odometer),
                         station = p.station.orEmpty(),
+                        total = Fmt.input(p.totalPaid),
                     )
                     Notifications.cancel(c.appContext, Notifications.ID_CHARGE_COMPLETE)
                 }
@@ -132,9 +135,10 @@ class EntryViewModel(private val c: AppContainer, private val editId: Long?) : V
                         odoBefore = cur.odoBefore.ifBlank { f.odoBefore },
                         battBefore = cur.battBefore.ifBlank { f.battBefore },
                         battAfter = cur.battAfter.ifBlank { f.battAfter },
+                        total = cur.total.ifBlank { f.total },
                     )
                 }
-                if (f.unit.isEmpty() && f.station.isNotEmpty()) {
+                if (f.unit.isEmpty() && f.station.isNotEmpty() && f.total.isEmpty()) {
                     lastUnitByStation[f.station.trim()]?.let { f = f.copy(unit = Fmt.input(it)) }
                 }
                 form = f
@@ -186,7 +190,11 @@ class EntryViewModel(private val c: AppContainer, private val editId: Long?) : V
             odometerBefore = Fmt.parse(f.odoBefore), odometerAfter = Fmt.parse(f.odoAfter),
             batteryBefore = Fmt.parse(f.battBefore), batteryAfter = Fmt.parse(f.battAfter),
             notes = f.notes, excludeFromConsumption = f.exclude, distanceOverrideKm = Fmt.parse(f.distanceOverride),
-            source = base?.source ?: if (autoFilledFromApi) RecordSource.TESLA_API else RecordSource.MANUAL,
+            source = base?.source ?: when {
+                fromNotification -> RecordSource.NOTIFICATION
+                autoFilledFromApi -> RecordSource.TESLA_API
+                else -> RecordSource.MANUAL
+            },
             createdAt = base?.createdAt ?: System.currentTimeMillis(),
         )
         viewModelScope.launch { onSaved(c.charges.save(entity)) }

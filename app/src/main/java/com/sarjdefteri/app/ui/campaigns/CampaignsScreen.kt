@@ -63,7 +63,7 @@ import com.sarjdefteri.app.ui.components.EmptyState
 import com.sarjdefteri.app.ui.components.NumberField
 import com.sarjdefteri.app.ui.components.SectionCard
 import com.sarjdefteri.app.ui.components.TextInput
-import com.sarjdefteri.app.ui.theme.TeslaRed
+import com.sarjdefteri.app.ui.theme.BrandRed
 import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -169,7 +169,7 @@ private fun CampaignRow(e: CampaignEntity, onClick: () -> Unit, vm: CampaignsVie
                     color = if (expired) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface)
                 Text(listOfNotNull(e.bank, e.operator ?: "Tüm istasyonlar").joinToString(" · "), style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Text(campaignSummary(e), style = MaterialTheme.typography.bodyMedium, color = if (expired) MaterialTheme.colorScheme.onSurfaceVariant else TeslaRed)
+                Text(campaignSummary(e), style = MaterialTheme.typography.bodyMedium, color = if (expired) MaterialTheme.colorScheme.onSurfaceVariant else BrandRed)
                 Text(if (!e.active) "Pasif" else campaignValidity(e), style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }

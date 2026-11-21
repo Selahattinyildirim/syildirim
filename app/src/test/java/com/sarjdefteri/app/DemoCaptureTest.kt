@@ -44,6 +44,7 @@ class DemoCaptureTest {
         compose.waitUntil(5_000) { compose.onAllNodesWithText(text, substring = true).fetchSemanticsNodes().isNotEmpty() }
 
     @Test fun firstLaunchFlow() {
+        kotlinx.coroutines.runBlocking { ApplicationProvider.getApplicationContext<SarjDefteriApp>().container.settings.resetAll() }
         val ctx = ApplicationProvider.getApplicationContext<SarjDefteriApp>()
         val icon = ContextCompat.getDrawable(ctx, R.mipmap.ic_launcher)!!
         val ib = Bitmap.createBitmap(432, 432, Bitmap.Config.ARGB_8888)
@@ -51,7 +52,14 @@ class DemoCaptureTest {
         File(dir, "icon.png").outputStream().use { ib.compress(Bitmap.CompressFormat.PNG, 100, it) }
 
         scenario = ActivityScenario.launch(MainActivity::class.java)
+        waitFor("Aracını seç")
+        shot("a0-arac-secimi")
+        compose.onNode(hasText("Marka veya model ara") and hasSetTextAction()).performTextInput("togg")
+        compose.waitForIdle()
+        shot("a0b-arac-arama")
+        compose.onNodeWithText("Togg T10X Uzun Menzil").performClick()
         waitFor("İlk şarjı ekle")
+        compose.onNodeWithText("Togg T10X Uzun Menzil").assertExists() // panel başlığında araç adı
         shot("a1-ilk-acilis")
         compose.onNodeWithText("İlk şarjı ekle").performClick()
         waitFor("Yeni şarj")

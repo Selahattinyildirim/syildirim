@@ -33,7 +33,8 @@ lisans satıyorlar. Bu fiyatlar, Tesla sahiplerinin otomasyona para ödediğini 
 
 ## 3. Gelir modeli
 - **Ücretsiz:** Sınırsız kayıt, panel, temel grafikler, CSV, kampanyalar, Bluetooth hatırlatmaları. Amaç kullanıcı kazanmak ve iyi puan almak.
-- **Pro (tek seferlik, öneri 149–199 ₺):** Tesla otomasyonu, gelişmiş analizler, Excel.
+- **Pro (tek seferlik, öneri 149–199 ₺):** Otomatik şarj algılama (operatör bildirimleri), araç bağlantısı (Tesla),
+  gelişmiş analizler, Excel.
 - **İleride – kampanya akışı:** Bizim hazırladığımız, kaynağı belirtilmiş, aylık güncel kampanya listesi (uygulama açılınca uzaktan JSON olarak çekilir).
   Abonelik için en güçlü aday bu; kullanıcı her ay geri gelir.
 - **İleride – Tesla otomasyonunun kitleye açılması:** Şu an her kullanıcı kendi Tesla geliştirici kimliğini giriyor. Bu teknik kullanıcıya uygun,
@@ -61,9 +62,11 @@ Asıl fırsat Togg ve Tesla topluluklarında (forumlar, Facebook/WhatsApp grupla
 3. `./gradlew bundleRelease` → `app/build/outputs/bundle/release/app-release.aab` dosyasını kapalı test kanalına yükle.
 4. Para kazanma → Uygulama içi ürünler → `sarj_defteri_pro` oluştur, fiyatı belirle (ödeme profili ve vergi bilgisi gerekir).
 5. Gizlilik politikası URL'si: `docs/PRIVACY_POLICY.md`'yi GitHub Pages veya basit bir web sayfasında yayınla.
-6. Veri güvenliği formu: "Veri toplanmıyor / paylaşılmıyor". Satın alma Google Play'de işlenir; Tesla verisi cihazda kalır.
-7. İçerik derecelendirmesi anketi, hedef kitle (18+ veya 13+), reklam yok.
-8. Mağaza görselleri: `docs/demo`, `docs/screenshots` (en az 2 telefon ekran görüntüsü, 512×512 ikon, 1024×500 tanıtım görseli).
+6. **Bildirim erişimi beyanı:** Mağaza açıklamasında ve uygulama içinde amacı açıkça yaz (seçilen şarj uygulamalarının bildiriminden
+   kayıt önerisi; veri cihazda kalır). İnceleme ekibi için kısa bir ekran kaydı hazırla.
+7. Veri güvenliği formu: "Veri toplanmıyor / paylaşılmıyor". Satın alma Google Play'de işlenir; Tesla verisi cihazda kalır.
+8. İçerik derecelendirmesi anketi, hedef kitle (18+ veya 13+), reklam yok.
+9. Mağaza görselleri: `docs/demo`, `docs/screenshots` (en az 2 telefon ekran görüntüsü, 512×512 ikon, 1024×500 tanıtım görseli).
 
 ## 6. Mağaza metni (taslak)
 **Kısa açıklama (80):** Elektrikli araç şarj maliyetini, kWh/100 km tüketimini ve kart kampanyalarını takip et.
@@ -76,6 +79,8 @@ Asıl fırsat Togg ve Tesla topluluklarında (forumlar, Facebook/WhatsApp grupla
 • Banka kartı ve operatör kampanyaları: şarj anında en avantajlı kartı gösterir
 • Araca binince/inince Bluetooth hatırlatmaları
 • CSV ve Excel dışa aktarma
-• Pro: Tesla ile otomatik km/batarya/şarj bitişi (Tesla Fleet API)
+• Togg, Tesla, BYD, Renault, Hyundai… tüm elektrikli araçlar için; aracını seç, batarya kapasitesi otomatik gelsin
+• Pro: ZES, Trugo, Eşarj gibi uygulamaların "şarj tamamlandı" bildiriminden kWh ve tutarı dolu kayıt önerisi
+• Pro: Tesla sahipleri için otomatik km/batarya/şarj bitişi
 Verilerin yalnızca telefonunda kalır. Hesap yok, reklam yok.
 Tesla, ilgili şirketin ticari markasıdır; Şarj Defteri bağımsız bir uygulamadır.

@@ -41,7 +41,7 @@ import androidx.lifecycle.viewModelScope
 import com.sarjdefteri.app.AppContainer
 import com.sarjdefteri.app.data.settings.AppSettings
 import com.sarjdefteri.app.ui.components.SectionCard
-import com.sarjdefteri.app.ui.theme.TeslaRed
+import com.sarjdefteri.app.ui.theme.BrandRed
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
@@ -55,7 +55,8 @@ class ProViewModel(private val c: AppContainer) : ViewModel() {
 }
 
 val PRO_FEATURES = listOf(
-    "Tesla Fleet API otomasyonu" to "Km, batarya ve şarj bitişi otomatik; bildirimden önceden doldurulmuş kayıt",
+    "Otomatik şarj algılama" to "ZES, Trugo, Eşarj gibi uygulamaların bildiriminden kWh ve tutarı dolu kayıt önerisi",
+    "Araç bağlantısı" to "Destekleyen araçlarda (şimdilik Tesla) km, batarya ve şarj bitişi otomatik",
     "Gelişmiş analizler" to "İstasyonlara göre maliyet, aylık km ve birim fiyat trendi",
     "Excel (.xlsx) dışa aktarma" to "Muhasebe ve gider takibi için biçimli tablo",
     "Uygulamanın gelişimine destek" to "Tek seferlik ödeme, abonelik yok, reklam yok",
@@ -83,7 +84,7 @@ fun ProScreen(vm: ProViewModel, onBack: () -> Unit) {
             SectionCard {
                 PRO_FEATURES.forEach { (title, desc) ->
                     Row(verticalAlignment = Alignment.Top, modifier = Modifier.padding(vertical = 4.dp)) {
-                        Icon(Icons.Default.CheckCircle, null, tint = TeslaRed)
+                        Icon(Icons.Default.CheckCircle, null, tint = BrandRed)
                         Column(Modifier.padding(start = 12.dp)) {
                             Text(title, style = MaterialTheme.typography.titleSmall)
                             Text(desc, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -95,7 +96,7 @@ fun ProScreen(vm: ProViewModel, onBack: () -> Unit) {
                 Button(
                     onClick = { if (!vm.buy(activity)) info = "Google Play'e bağlanılamadı veya ürün henüz yayında değil. Biraz sonra tekrar deneyin." },
                     modifier = Modifier.fillMaxWidth().height(54.dp), shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = TeslaRed, contentColor = MaterialTheme.colorScheme.onSecondary),
+                    colors = ButtonDefaults.buttonColors(containerColor = BrandRed, contentColor = MaterialTheme.colorScheme.onSecondary),
                 ) { Text(price?.let { "Pro'ya geç · $it" } ?: "Pro'ya geç") }
                 OutlinedButton(onClick = { vm.restore(); info = "Satın alımlar kontrol ediliyor…" }, modifier = Modifier.fillMaxWidth()) {
                     Text("Satın alımı geri yükle")

@@ -43,7 +43,8 @@ import com.sarjdefteri.app.ui.settings.SettingsScreen
 import com.sarjdefteri.app.ui.settings.SettingsViewModel
 import com.sarjdefteri.app.ui.tesla.TeslaScreen
 import com.sarjdefteri.app.ui.tesla.TeslaViewModel
-import com.sarjdefteri.app.ui.theme.TeslaRed
+import com.sarjdefteri.app.ui.theme.BrandRed
+import com.sarjdefteri.app.ui.vehicle.VehiclePickerScreen
 
 object Routes {
     const val DASHBOARD = "dashboard"
@@ -52,6 +53,7 @@ object Routes {
     const val TESLA = "tesla"
     const val ODOMETER = "odometer"
     const val PRO = "pro"
+    const val VEHICLE = "vehicle"
     const val CAMPAIGNS = "campaigns"
     const val CAMPAIGN_NEW = "campaign/new"
     const val CAMPAIGN_EDIT = "campaign/edit/{id}"
@@ -86,6 +88,13 @@ fun AppNav(container: AppContainer) {
         }
     }
 
+    val appSettings by container.settings.settings.collectAsState(initial = null as com.sarjdefteri.app.data.settings.AppSettings?)
+    val st = appSettings ?: return // ayarlar yüklenene kadar boş (göz kırpmayı önler)
+    if (!st.onboarded) {
+        VehiclePickerScreen(firstRun = true, onDone = {})
+        return
+    }
+
     val isTab = tabs.any { it.route == current }
     Scaffold(
         bottomBar = {
@@ -107,11 +116,11 @@ fun AppNav(container: AppContainer) {
         },
         floatingActionButton = {
             if (current == Routes.CAMPAIGNS) {
-                FloatingActionButton(onClick = { nav.navigate(Routes.CAMPAIGN_NEW) }, containerColor = TeslaRed,
+                FloatingActionButton(onClick = { nav.navigate(Routes.CAMPAIGN_NEW) }, containerColor = BrandRed,
                     contentColor = MaterialTheme.colorScheme.onSecondary) { Icon(Icons.Default.Add, "Kampanya ekle") }
             }
             if (current == Routes.DASHBOARD || current == Routes.HISTORY) {
-                FloatingActionButton(onClick = { nav.navigate(Routes.ENTRY_NEW) }, containerColor = TeslaRed,
+                FloatingActionButton(onClick = { nav.navigate(Routes.ENTRY_NEW) }, containerColor = BrandRed,
                     contentColor = MaterialTheme.colorScheme.onSecondary) { Icon(Icons.Default.Add, "Şarj ekle") }
             }
         },
@@ -139,12 +148,13 @@ fun AppNav(container: AppContainer) {
                     onPro = { nav.navigate(Routes.PRO) })
             }
             composable(Routes.SETTINGS) {
-                SettingsScreen(appViewModel { SettingsViewModel(it) }, padding, onTesla = { nav.navigate(Routes.TESLA) },
+                SettingsScreen(appViewModel { SettingsViewModel(it) }, padding, onTesla = { nav.navigate(Routes.TESLA) }, onVehicle = { nav.navigate(Routes.VEHICLE) },
                     onPro = { nav.navigate(Routes.PRO) })
             }
             composable(Routes.TESLA) {
                 Wrapper(padding) { TeslaScreen(appViewModel { TeslaViewModel(it) }, onBack = { nav.popBackStack() }) }
             }
+            composable(Routes.VEHICLE) { VehiclePickerScreen(firstRun = false, onDone = { nav.popBackStack() }) }
             composable(Routes.PRO) {
                 Wrapper(padding) { ProScreen(appViewModel { ProViewModel(it) }, onBack = { nav.popBackStack() }) }
             }

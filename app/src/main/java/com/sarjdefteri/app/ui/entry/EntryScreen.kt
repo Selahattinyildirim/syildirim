@@ -50,7 +50,7 @@ import com.sarjdefteri.app.ui.components.DateTimePickerDialog
 import com.sarjdefteri.app.ui.components.NumberField
 import com.sarjdefteri.app.ui.components.SectionCard
 import com.sarjdefteri.app.ui.components.TextInput
-import com.sarjdefteri.app.ui.theme.TeslaRed
+import com.sarjdefteri.app.ui.theme.BrandRed
 
 private val DEFAULT_BANKS = listOf("Akbank", "Garanti BBVA", "İş Bankası", "Yapı Kredi", "QNB", "Ziraat", "Enpara", "VakıfBank", "Halkbank", "DenizBank")
 private val DEFAULT_PAYMENTS = listOf("Kredi kartı", "Banka kartı", "Uygulama cüzdanı", "Tesla hesabı", "Nakit")
@@ -100,7 +100,7 @@ fun EntryScreen(vm: EntryViewModel, onBack: () -> Unit, onSaved: (Long) -> Unit)
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             if (vm.autoFilledFromApi) {
-                AssistChip(onClick = {}, label = { Text("Tesla'dan otomatik dolduruldu — tutarı girmen yeterli") },
+                AssistChip(onClick = {}, label = { Text("Otomatik dolduruldu — kontrol edip kaydet") },
                     leadingIcon = { Icon(Icons.Default.AutoAwesome, null) })
             }
 
@@ -140,7 +140,7 @@ fun EntryScreen(vm: EntryViewModel, onBack: () -> Unit, onSaved: (Long) -> Unit)
                 SectionCard(title = if (f.bank.isBlank()) "En avantajlı kart" else "Uygun kampanya") {
                     suggestions.forEach { sg ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.LocalOffer, null, tint = TeslaRed)
+                            Icon(Icons.Default.LocalOffer, null, tint = BrandRed)
                             Column(Modifier.weight(1f).padding(start = 10.dp)) {
                                 Text(sg.campaign.title, style = MaterialTheme.typography.bodyLarge)
                                 Text("%" + Fmt.num(sg.campaign.discountRate, 1) + (sg.discount?.let { " · −" + Fmt.tl(it) } ?: ""),

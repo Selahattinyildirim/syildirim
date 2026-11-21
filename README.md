@@ -23,7 +23,9 @@ Kotlin + Jetpack Compose (Material 3), Room, WorkManager, DataStore. Harici sunu
 | Şarj bitince bildirimden önceden doldurulmuş hızlı kayıt | ✅ (API ile otomatik; API'siz "sonra hatırlat") |
 | Navigasyon hedefi şarj istasyonuysa varış öncesi soru | ✅ (API ile, isteğe bağlı) |
 | Banka kartı / operatör kampanyaları: şarjda en avantajlı kart önerisi, otomatik indirim, aylık hatırlatma | ✅ |
-| Pro (Google Play tek seferlik satın alma): Tesla otomasyonu, gelişmiş analizler, Excel | ✅ |
+| İlk açılışta araç seçimi (Togg, Tesla, BYD, Renault, Hyundai, Kia, VW, MG, Volvo, BMW…) ve otomatik batarya kapasitesi | ✅ |
+| Şarj operatörü uygulamalarının bildirimlerinden (ZES, Trugo, Eşarj…) otomatik kayıt önerisi | ✅ (Pro) |
+| Pro (Google Play tek seferlik satın alma): otomatik algılama, Tesla bağlantısı, gelişmiş analizler, Excel | ✅ |
 
 ## Mimari
 
@@ -83,6 +85,12 @@ dışa aktarılır, sonraki sürümlerde migration yazılabilir.
 * Tüm veriler cihazdaki Room veritabanında. İnternet izni yalnızca Tesla API için.
 * Tesla access/refresh token ve client secret, **Android Keystore AES-256-GCM** anahtarıyla şifrelenip saklanır, yedeklemeye dahil edilmez.
 * Kaynak kodda hiçbir anahtar/token yoktur; kullanıcı kendi Client ID/Secret'ını uygulama içinde girer.
+
+## Geliştirme yöntemi
+
+Proje [obra/superpowers](https://github.com/obra/superpowers) yöntemini izler: tasarım belgesi (`docs/superpowers/specs`) →
+uygulama planı (`docs/superpowers/plans`) → önce kırmızı test (TDD) → doğrulama. Claude Code'da eklentiyi kurmak için:
+`/plugin install superpowers@claude-plugins-official`.
 
 ## Mağaza ve gelir planı
 

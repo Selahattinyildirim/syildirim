@@ -40,7 +40,7 @@ import com.sarjdefteri.app.ui.pro.LockedCard
 import com.sarjdefteri.app.ui.theme.ChartAmber
 import com.sarjdefteri.app.ui.theme.ChartBlue
 import com.sarjdefteri.app.ui.theme.ChartTeal
-import com.sarjdefteri.app.ui.theme.TeslaRed
+import com.sarjdefteri.app.ui.theme.BrandRed
 
 @Composable
 fun DashboardScreen(vm: DashboardViewModel, contentPadding: PaddingValues, onAdd: () -> Unit, onOdometer: () -> Unit, onPro: () -> Unit, onCampaigns: () -> Unit) {
@@ -71,12 +71,12 @@ fun DashboardScreen(vm: DashboardViewModel, contentPadding: PaddingValues, onAdd
                         style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 } else campaigns.take(3).forEach { c ->
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 2.dp)) {
-                        Icon(Icons.Default.LocalOffer, null, tint = TeslaRed)
+                        Icon(Icons.Default.LocalOffer, null, tint = BrandRed)
                         Column(Modifier.weight(1f).padding(start = 12.dp)) {
                             Text(c.title, style = MaterialTheme.typography.bodyLarge, maxLines = 1)
                             Text(campaignValidity(c), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
-                        Text(campaignSummary(c).substringBefore(" ·"), style = MaterialTheme.typography.titleMedium, color = TeslaRed)
+                        Text(campaignSummary(c).substringBefore(" ·"), style = MaterialTheme.typography.titleMedium, color = BrandRed)
                     }
                 }
                 if (campaigns.size > 3) Text("+${campaigns.size - 3} kampanya daha", style = MaterialTheme.typography.bodySmall,
@@ -97,7 +97,7 @@ fun DashboardScreen(vm: DashboardViewModel, contentPadding: PaddingValues, onAdd
         item {
             SectionCard(modifier = Modifier.clickable(onClick = onOdometer)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Speed, null, tint = TeslaRed)
+                    Icon(Icons.Default.Speed, null, tint = BrandRed)
                     Column(Modifier.weight(1f).padding(start = 12.dp)) {
                         Text("Son şarjdan bu yana", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text(Fmt.km(a.sinceLastChargeKm), style = MaterialTheme.typography.headlineSmall)
@@ -132,7 +132,7 @@ fun DashboardScreen(vm: DashboardViewModel, contentPadding: PaddingValues, onAdd
         if (months.isNotEmpty()) {
             item {
                 SectionCard(title = "Aylık şarj harcaması") {
-                    BarChart(months.map { ChartPoint(Fmt.month(it.month), it.cost) }, TeslaRed, { Fmt.tlShort(it) })
+                    BarChart(months.map { ChartPoint(Fmt.month(it.month), it.cost) }, BrandRed, { Fmt.tlShort(it) })
                 }
             }
             item {
@@ -164,7 +164,7 @@ fun DashboardScreen(vm: DashboardViewModel, contentPadding: PaddingValues, onAdd
             item {
                 SectionCard(title = "İstasyonlara göre maliyet") {
                     val top = a.stations.take(8)
-                    HorizontalBars(top.map { it.station to it.cost }, TeslaRed, { Fmt.tlShort(it) }) { i ->
+                    HorizontalBars(top.map { it.station to it.cost }, BrandRed, { Fmt.tlShort(it) }) { i ->
                         val st = top[i]
                         "${st.count} şarj · ${Fmt.kwh(st.energyKwh)} · ${Fmt.unit(st.avgUnitCost)}"
                     }

@@ -25,6 +25,7 @@ class AppContainer(context: Context) {
     val secureStore: SecureStore by lazy { SecureStore(appContext) }
     val tesla: TeslaRepository by lazy { TeslaRepository(settings, secureStore) }
     val reminderState: ReminderState by lazy { ReminderState(appContext) }
+    val chargeNotificationHandler by lazy { com.sarjdefteri.app.reminders.ChargeNotificationHandler(appContext, settings) }
     val reminderEngine: ReminderEngine by lazy { ReminderEngine(appContext, settings, charges, tesla, reminderState) }
     val exporter: Exporter by lazy { Exporter() }
     val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
